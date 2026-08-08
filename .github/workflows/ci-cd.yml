@@ -1,0 +1,117 @@
+name: CI/CD Pipeline - ERP POS System
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  # 1. Test & Build Go Microservices
+  backend-ci:
+    name: Backend CI (10 Go Services)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Go 1.22
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache: true
+
+      - name: Download Go Dependencies
+        run: go mod download
+
+      - name: Run Go Test
+        run: go test ./... -v
+
+      - name: Test Go Build 10 Services
+        run: |
+          mkdir -p bin
+          go build -o bin/auth-service ./services/auth-service/cmd/main.go
+          go build -o bin/hr-payroll-service ./services/hr-payroll-service/cmd/main.go
+          go build -o bin/inventory-service ./services/inventory-service/cmd/main.go
+          go build -o bin/pos-service ./services/pos-service/cmd/main.go
+          go build -o bin/purchasing-service ./services/purchasing-service/cmd/main.go
+          go build -o bin/finance-service ./services/finance-service/cmd/main.go
+          go build -o bin/chat-service ./services/chat-service/cmd/main.go
+          go build -o bin/crm-loyalty-service ./services/crm-loyalty-service/cmd/main.go
+          go build -o bin/ai-assistant-service ./services/ai-assistant-service/cmd/main.go
+          go build -o bin/asset-service ./services/asset-service/cmd/main.go
+
+  # 2. Test & Build Next.js Web ERP
+  frontend-ci:
+    name: Frontend CI (Next.js 14 Web ERP)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'apps/web-erp/package.json'
+
+      - name: Install Frontend Dependencies
+        run: |
+          cd apps/web-erp
+          npm ci
+
+      - name: Run Next.js Build & Lint
+        run: |
+          cd apps/web-erp
+          npm run build
+
+  # 3. Docker Build & Push
+  docker-build-push:
+    name: Docker Multi-Stage Build & Registry Push
+    needs: [backend-ci, frontend-ci]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry (GHCR)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push Master Docker Compose Images
+        run: |
+          cd deployments
+          docker compose build
+          # docker compose push (dapat diaktifkan jika repo container registry siap)
+
+  # 4. Continuous Deployment (CD)
+  deploy:
+    name: Continuous Deployment via SSH
+    needs: [docker-build-push]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Execute Remote SSH Deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /opt/erp-pos-system/deployments
+            git pull origin main
+            docker compose down
+            docker compose up -d --build
+            docker system prune -f

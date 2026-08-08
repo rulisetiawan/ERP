@@ -1,0 +1,16 @@
+# Ultra-Fast & Memory-Optimized Dockerfile for Go Microservices
+FROM alpine:3.19
+
+RUN apk --no-cache add ca-certificates tzdata
+ENV TZ=Asia/Jakarta
+
+WORKDIR /app
+
+ARG SERVICE_NAME
+
+# Copy pre-compiled Linux Go binary
+COPY bin/${SERVICE_NAME} /app/service
+
+EXPOSE 8000-8010
+
+CMD ["/app/service"]

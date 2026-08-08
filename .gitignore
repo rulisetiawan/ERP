@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js build outputs & temporary files
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+
+# Go compiled binaries & temporary test files
+bin/
+*.exe
+*.exe?
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Environment & Secret configuration files
+.env
+.env*.local
+*.pem
+*.key
+
+# Operating System & Editor metadata
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary scratch & storage directories
+scratch/
+deployments/data/
