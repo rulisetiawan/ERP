@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Search, Filter, Lock, ShieldCheck } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search, Filter, Lock, ShieldCheck, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 
 export interface ColumnDef<T> {
   header: string;
   accessorKey?: keyof T;
   cell?: (row: T) => React.ReactNode;
   isOwnerOnly?: boolean; // If true, only visible to Owner role
+  sortKey?: string; // Optional custom sort key
 }
 
 interface FilterOption {
@@ -33,6 +34,8 @@ export function DataTable<T extends Record<string, any>>({
 }: DataTableProps<T>) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string>>({});
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -49,6 +52,23 @@ export function DataTable<T extends Record<string, any>>({
       ...prev,
       [filterKey]: value,
     }));
+    setCurrentPage(1);
+  };
+
+  // Handle Column Header Sorting Click
+  const handleSort = (key: string | undefined) => {
+    if (!key) return;
+    if (sortColumn === key) {
+      if (sortDirection === "asc") {
+        setSortDirection("desc");
+      } else {
+        setSortColumn(null);
+        setSortDirection("asc");
+      }
+    } else {
+      setSortColumn(key);
+      setSortDirection("asc");
+    }
     setCurrentPage(1);
   };
 
@@ -75,13 +95,37 @@ export function DataTable<T extends Record<string, any>>({
     });
   }, [data, searchQuery, selectedFilters]);
 
+  // Sorting Logic (Ascending / Descending)
+  const sortedData = useMemo(() => {
+    if (!sortColumn) return filteredData;
+
+    return [...filteredData].sort((a, b) => {
+      const valA = a[sortColumn];
+      const valB = b[sortColumn];
+
+      if (valA === undefined || valA === null) return 1;
+      if (valB === undefined || valB === null) return -1;
+
+      if (typeof valA === "number" && typeof valB === "number") {
+        return sortDirection === "asc" ? valA - valB : valB - valA;
+      }
+
+      const strA = String(valA).toLowerCase();
+      const strB = String(valB).toLowerCase();
+
+      if (strA < strB) return sortDirection === "asc" ? -1 : 1;
+      if (strA > strB) return sortDirection === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filteredData, sortColumn, sortDirection]);
+
   // Pagination Logic
-  const totalEntries = filteredData.length;
+  const totalEntries = sortedData.length;
   const totalPages = Math.max(Math.ceil(totalEntries / pageSize), 1);
   const startIndex = (currentPage - 1) * pageSize;
   const paginatedData = useMemo(() => {
-    return filteredData.slice(startIndex, startIndex + pageSize);
-  }, [filteredData, startIndex, pageSize]);
+    return sortedData.slice(startIndex, startIndex + pageSize);
+  }, [sortedData, startIndex, pageSize]);
 
   return (
     <div className="space-y-4">
@@ -141,23 +185,45 @@ export function DataTable<T extends Record<string, any>>({
       {/* Main Table */}
       <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900/90 shadow-xl">
         <table className="w-full text-left text-xs text-slate-300">
-          <thead className="bg-slate-950 text-slate-400 border-b border-slate-800 font-semibold uppercase tracking-wider">
+          <thead className="bg-slate-950 text-slate-400 border-b border-slate-800 font-semibold uppercase tracking-wider select-none">
             <tr>
-              {visibleColumns.map((col, idx) => (
-                <th key={idx} className="p-3.5">
-                  <div className="flex items-center gap-1">
-                    <span>{col.header}</span>
-                    {col.isOwnerOnly && <Lock className="w-3 h-3 text-amber-400 inline" />}
-                  </div>
-                </th>
-              ))}
+              {visibleColumns.map((col, idx) => {
+                const targetKey = (col.sortKey || col.accessorKey) as string | undefined;
+                const isSorted = sortColumn && sortColumn === targetKey;
+
+                return (
+                  <th
+                    key={idx}
+                    onClick={() => handleSort(targetKey)}
+                    className={`p-3.5 ${targetKey ? "cursor-pointer hover:text-slate-100 hover:bg-slate-800/60 transition-colors" : ""}`}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <span>{col.header}</span>
+                      {col.isOwnerOnly && <Lock className="w-3 h-3 text-amber-400 inline" />}
+                      {targetKey && (
+                        <span className="text-slate-500">
+                          {isSorted ? (
+                            sortDirection === "asc" ? (
+                              <ArrowUp className="w-3.5 h-3.5 text-blue-400 font-bold" />
+                            ) : (
+                              <ArrowDown className="w-3.5 h-3.5 text-blue-400 font-bold" />
+                            )
+                          ) : (
+                            <ArrowUpDown className="w-3.5 h-3.5 opacity-40 hover:opacity-100" />
+                          )}
+                        </span>
+                      )}
+                    </div>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800/60 font-mono">
             {paginatedData.length === 0 ? (
               <tr>
                 <td colSpan={visibleColumns.length} className="p-8 text-center text-slate-500">
-                  Tidak ada data yang sesuai dengan pencarian / filter.
+                  Tidak ada data yang sesuai dengan pencarian / filter / pengurutan.
                 </td>
               </tr>
             ) : (
