@@ -26,39 +26,39 @@ export function Sidebar() {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>("inventory");
 
   const menuItems = [
-    { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { title: "AI Assistant", href: "/ai-assistant", icon: Sparkles, badge: "AI" },
-    { title: "Laporan & Analytics", href: "/reports", icon: FileText, badge: "Pusat" },
-    { title: "Terminal POS Kasir", href: "/pos", icon: ShoppingCart, badge: "POS" },
-    { title: "Pelanggan & Loyalty", href: "/crm/customers", icon: UserCheck, badge: "CRM" },
+    { title: "Dasbor Utama", href: "/dashboard", icon: LayoutDashboard },
+    { title: "Asisten Kecerdasan Buatan", href: "/ai-assistant", icon: Sparkles, badge: "AI" },
+    { title: "Laporan & Analitik", href: "/reports", icon: FileText, badge: "Pusat" },
+    { title: "Kasir POS Penjualan", href: "/pos", icon: ShoppingCart, badge: "POS" },
+    { title: "Data Pelanggan & Loyalitas", href: "/crm/customers", icon: UserCheck, badge: "CRM" },
     {
-      title: "Inventaris & Stok",
+      title: "Inventaris & Stok Barang",
       key: "inventory",
       icon: Package,
       children: [
         { title: "Katalog Produk", href: "/inventory/products" },
         { title: "Barang Masuk & Keluar", href: "/inventory/movements" },
-        { title: "Stock Opname Delta", href: "/inventory/opnames" },
-        { title: "Transfer Stok", href: "/inventory/transfers" },
+        { title: "Penyesuaian Stok Fisik", href: "/inventory/opnames" },
+        { title: "Mutasi Antar Cabang", href: "/inventory/transfers" },
       ],
     },
     {
-      title: "Pembelian (PO & GRN)",
+      title: "Pembelian & Pemasok",
       key: "purchasing",
       icon: Truck,
       children: [
-        { title: "Purchase Orders", href: "/purchasing/orders" },
-        { title: "Vendor Directory", href: "/purchasing/vendors" },
+        { title: "Pesanan Pembelian (PO)", href: "/purchasing/orders" },
+        { title: "Daftar Pemasok (Vendor)", href: "/purchasing/vendors" },
       ],
     },
     {
-      title: "HR & Payroll",
+      title: "SDM & Penggajian",
       key: "hr",
       icon: Users,
       children: [
-        { title: "Master Karyawan", href: "/hr/employees" },
-        { title: "Absensi GPS & Selfie", href: "/hr/attendances" },
-        { title: "Pengolahan Payroll", href: "/hr/payrolls" },
+        { title: "Data Karyawan", href: "/hr/employees" },
+        { title: "Absensi Kehadiran Karyawan", href: "/hr/attendances" },
+        { title: "Penggajian (Payroll)", href: "/hr/payrolls" },
       ],
     },
     {
@@ -66,25 +66,25 @@ export function Sidebar() {
       key: "finance",
       icon: FileSpreadsheet,
       children: [
-        { title: "Chart of Accounts (CoA)", href: "/finance/coa" },
-        { title: "Jurnal Umum Ledger", href: "/finance/journals" },
+        { title: "Bagan Akun Keuangan (CoA)", href: "/finance/coa" },
+        { title: "Buku Jurnal Umum", href: "/finance/journals" },
         { title: "Laporan Laba Rugi", href: "/finance/reports/pnl" },
       ],
     },
-    { title: "Manajemen Aset", href: "/assets", icon: Building2 },
-    { title: "Master Data Engine", href: "/settings/master-data", icon: Database, badge: "Pusat" },
-    { title: "Live Chat & WhatsApp", href: "/chat", icon: MessageSquare, badge: "WAHA" },
+    { title: "Manajemen Aset Tetap", href: "/assets", icon: Building2 },
+    { title: "Pengaturan Data Master", href: "/settings/master-data", icon: Database, badge: "Pusat" },
+    { title: "Obrolan Tim & WhatsApp", href: "/chat", icon: MessageSquare, badge: "WAHA" },
     {
-      title: "Audit & Keamanan",
+      title: "Audit & Keamanan Sistem",
       key: "security",
       icon: ShieldCheck,
       children: [
-        { title: "Users & Roles Matrix", href: "/security/roles" },
-        { title: "System Audit Logs", href: "/security/audit-logs" },
-        { title: "Error Observability", href: "/security/error-logs" },
+        { title: "Peran & Hak Akses Pengguna", href: "/security/roles" },
+        { title: "Log Rekam Jejak Audit", href: "/security/audit-logs" },
+        { title: "Log Kesalahan Sistem", href: "/security/error-logs" },
       ],
     },
-    { title: "Pengaturan Parameter", href: "/settings/parameters", icon: Settings },
+    { title: "Pengaturan Parameter Sistem", href: "/settings/parameters", icon: Settings },
   ];
 
   return (
@@ -95,8 +95,8 @@ export function Sidebar() {
           EP
         </div>
         <div>
-          <h1 className="font-semibold text-slate-100 text-sm tracking-wide">ERP POS SYSTEM</h1>
-          <p className="text-[11px] text-slate-400">Enterprise Edition v1.0</p>
+          <h1 className="font-semibold text-slate-100 text-sm tracking-wide">SISTEM ERP & KASIR POS</h1>
+          <p className="text-[11px] text-slate-400">Edisi Perusahaan v1.0</p>
         </div>
       </Link>
 

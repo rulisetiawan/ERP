@@ -233,9 +233,9 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <div>
               <h2 className="text-sm font-bold text-slate-100 flex items-center gap-2">
-                <Award className="w-5 h-5 text-amber-400" /> Leaderboard Produk Terlaris (Fast Moving)
+                <Award className="w-5 h-5 text-amber-400" /> Peringkat Produk Terlaris (Paling Cepat Laris)
               </h2>
-              <p className="text-[11px] text-slate-400">Klik baris produk untuk melihat riwayat mutasi stok & penjualan</p>
+              <p className="text-xs text-slate-400">5 Produk Terunggul dengan Volume Penjualan & Total Pendapatan Tertinggi</p>
             </div>
             <span className="px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[11px] font-bold">
               Top 5 Performers
@@ -312,7 +312,7 @@ export default function DashboardPage() {
           >
             <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
               <h2 className="text-xs font-bold text-slate-100 flex items-center gap-2 group-hover:text-rose-400 transition-colors">
-                <AlertTriangle className="w-4 h-4 text-rose-400" /> Stok Menipis (Need Re-Order) <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <AlertTriangle className="w-4 h-4 text-rose-400" /> Peringatan Stok Menipis (Perlu Pesan Ulang) <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </h2>
               <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 text-[10px] font-bold">
                 {lowStockCount} SKU

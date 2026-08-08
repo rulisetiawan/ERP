@@ -15,7 +15,7 @@ export function Header() {
   const [apiKey, setApiKey] = useState("");
   const [temperature, setTemperature] = useState("0.7");
   const [saving, setSaving] = useState(false);
-  const [aiStatusText, setAiStatusText] = useState("Local Ollama AI Connected");
+  const [aiStatusText, setAiStatusText] = useState("Koneksi AI Lokal Ollama Terhubung");
 
   useEffect(() => {
     loadAIConfig();
@@ -29,7 +29,7 @@ export function Header() {
       setDefaultModel(data.default_model || "llama3");
       setApiKey(data.api_key || "");
       setTemperature(data.temperature ? String(data.temperature) : "0.7");
-      setAiStatusText(`${data.provider === "ollama" ? "Local Ollama AI" : data.provider.toUpperCase()} (${data.default_model})`);
+      setAiStatusText(`${data.provider === "ollama" ? "AI Lokal Ollama" : data.provider.toUpperCase()} (${data.default_model})`);
     }
   }
 
@@ -53,7 +53,7 @@ export function Header() {
       const json = await res.json();
       if (res.ok && json.success !== false) {
         setIsConfigModalOpen(false);
-        setAiStatusText(`${provider === "ollama" ? "Local Ollama AI" : provider.toUpperCase()} (${defaultModel})`);
+        setAiStatusText(`${provider === "ollama" ? "AI Lokal Ollama" : provider.toUpperCase()} (${defaultModel})`);
         setNotification("Konfigurasi AI berhasil disimpan & terhubung!");
         setTimeout(() => setNotification(""), 4000);
       } else {
@@ -61,7 +61,7 @@ export function Header() {
       }
     } catch (err) {
       console.error(err);
-      alert("Gagal terhubung ke AI Assistant Service.");
+      alert("Gagal terhubung ke Layanan Asisten AI.");
     }
     setSaving(false);
   }
@@ -92,7 +92,7 @@ export function Header() {
           <button
             onClick={() => setIsConfigModalOpen(true)}
             className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-xs text-blue-400 font-semibold cursor-pointer transition-all shadow-sm group"
-            title="Klik untuk mengubah Pengaturan Engine AI (Ollama / Gemini / OpenAI)"
+            title="Klik untuk mengubah Pengaturan Mesin AI (Ollama / Gemini / OpenAI)"
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse group-hover:scale-110 transition-transform" />
             <span>{aiStatusText}</span>
@@ -106,7 +106,7 @@ export function Header() {
           </div>
 
           {/* Notification Bell */}
-          <button className="relative p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition-colors">
+          <button className="relative p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition-colors" title="Pemberitahuan">
             <Bell className="w-4 h-4" />
             <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500" />
           </button>
@@ -117,7 +117,7 @@ export function Header() {
               SA
             </div>
             <div className="hidden lg:block text-left">
-              <p className="text-xs font-medium text-slate-200">Super Administrator</p>
+              <p className="text-xs font-medium text-slate-200">Pengelola Utama (Super Admin)</p>
               <p className="text-[10px] text-emerald-400 font-mono">super_admin@erp.com</p>
             </div>
           </div>
@@ -131,9 +131,9 @@ export function Header() {
             <div className="flex items-center justify-between border-b border-slate-800 pb-4">
               <div>
                 <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
-                  <Cpu className="w-5 h-5 text-amber-400" /> Pengaturan Koneksi AI Engine & Local LLM
+                  <Cpu className="w-5 h-5 text-amber-400" /> Pengaturan Koneksi Mesin AI & Model Lokal (LLM)
                 </h3>
-                <p className="text-xs text-slate-400">Konfigurasi langsung dari Frontend tanpa mengedit file .env backend</p>
+                <p className="text-xs text-slate-400">Konfigurasi langsung dari antarmuka tanpa mengedit file konfigurasi backend</p>
               </div>
               <button onClick={() => setIsConfigModalOpen(false)} className="text-slate-400 hover:text-white">
                 <X className="w-5 h-5" />
@@ -144,8 +144,8 @@ export function Header() {
               {/* 1. AI Provider */}
               <div className="grid grid-cols-3 gap-4 items-center border-b border-slate-800/80 pb-3">
                 <div className="col-span-1">
-                  <label className="text-slate-200 font-bold block">AI Provider Engine *</label>
-                  <p className="text-[11px] text-slate-400">Pilih penyedia layanan AI</p>
+                  <label className="text-slate-200 font-bold block">Penyedia Mesin AI *</label>
+                  <p className="text-[11px] text-slate-400">Pilih penyedia layanan kecerdasan buatan</p>
                 </div>
                 <div className="col-span-2">
                   <select
@@ -158,9 +158,9 @@ export function Header() {
                     }}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-100 font-medium focus:border-blue-500 focus:outline-none"
                   >
-                    <option value="ollama">Local Ollama AI (Self-Hosted / Off-Grid)</option>
-                    <option value="gemini">Google Gemini API (Cloud LLM)</option>
-                    <option value="openai">OpenAI GPT-4o (Cloud LLM)</option>
+                    <option value="ollama">AI Lokal Ollama (Mandiri / Offline)</option>
+                    <option value="gemini">Google Gemini API (Awan / Cloud)</option>
+                    <option value="openai">OpenAI GPT-4o (Awan / Cloud)</option>
                   </select>
                 </div>
               </div>
@@ -168,8 +168,8 @@ export function Header() {
               {/* 2. Base URL */}
               <div className="grid grid-cols-3 gap-4 items-center border-b border-slate-800/80 pb-3">
                 <div className="col-span-1">
-                  <label className="text-slate-200 font-bold block">AI Host Base URL *</label>
-                  <p className="text-[11px] text-slate-400">Endpoint API AI Engine</p>
+                  <label className="text-slate-200 font-bold block">Alamat Host Server AI *</label>
+                  <p className="text-[11px] text-slate-400">Alamat Endpoint API Mesin AI</p>
                 </div>
                 <div className="col-span-2">
                   <input
@@ -186,8 +186,8 @@ export function Header() {
               {/* 3. Default Model */}
               <div className="grid grid-cols-3 gap-4 items-center border-b border-slate-800/80 pb-3">
                 <div className="col-span-1">
-                  <label className="text-slate-200 font-bold block">Model Name *</label>
-                  <p className="text-[11px] text-slate-400">Nama model AI yang dipakai</p>
+                  <label className="text-slate-200 font-bold block">Nama Model AI *</label>
+                  <p className="text-[11px] text-slate-400">Nama model AI yang digunakan</p>
                 </div>
                 <div className="col-span-2">
                   <input
@@ -204,13 +204,13 @@ export function Header() {
               {/* 4. API Key (Optional for Ollama) */}
               <div className="grid grid-cols-3 gap-4 items-center border-b border-slate-800/80 pb-3">
                 <div className="col-span-1">
-                  <label className="text-slate-200 font-bold block">API Secret Key</label>
+                  <label className="text-slate-200 font-bold block">Kunci Rahasia API</label>
                   <p className="text-[11px] text-slate-400">Opsional untuk Gemini/OpenAI</p>
                 </div>
                 <div className="col-span-2">
                   <input
                     type="password"
-                    placeholder="AIzaSy... (Kosongkan jika Local Ollama)"
+                    placeholder="AIzaSy... (Kosongkan jika AI Lokal Ollama)"
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-100 font-mono focus:border-blue-500 focus:outline-none"
@@ -221,7 +221,7 @@ export function Header() {
               {/* 5. Temperature */}
               <div className="grid grid-cols-3 gap-4 items-center">
                 <div className="col-span-1">
-                  <label className="text-slate-200 font-bold block">Temperature Kreativitas</label>
+                  <label className="text-slate-200 font-bold block">Tingkat Kreativitas (Temperature)</label>
                   <p className="text-[11px] text-slate-400">Rentang 0.0 (Presisi) s/d 1.0</p>
                 </div>
                 <div className="col-span-2">

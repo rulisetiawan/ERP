@@ -42,6 +42,8 @@ export default function POSTerminalPage() {
   const [voucherCode, setVoucherCode] = useState("");
   const [voucherDiscount, setVoucherDiscount] = useState(0);
 
+  const [selectedOutlet, setSelectedOutlet] = useState<string>("Outlet Jakpus #01 (Sudirman)");
+
   // Payment & Checkout State (EDC removed: only Cash, QRIS, Transfer)
   const [paymentMethod, setPaymentMethod] = useState<"Cash" | "QRIS" | "Transfer">("Cash");
   const [cashAmount, setCashAmount] = useState<string>("");
@@ -347,7 +349,22 @@ export default function POSTerminalPage() {
               <h2 className="text-sm font-bold text-slate-100 flex items-center gap-2">
                 <ShoppingCart className="w-4 h-4 text-blue-400" /> Keranjang Belanja
               </h2>
-              <p className="text-[11px] text-slate-400 font-mono">Terminal POS #01 (Outlet Jakpus)</p>
+              <div className="flex items-center gap-1.5 pt-0.5">
+                <Building className="w-3 h-3 text-blue-400" />
+                <select
+                  value={selectedOutlet}
+                  onChange={(e) => {
+                    setSelectedOutlet(e.target.value);
+                    localStorage.setItem("active_outlet", e.target.value);
+                  }}
+                  className="bg-slate-950 border border-slate-800 text-[11px] font-mono text-blue-300 font-bold rounded-lg px-2 py-0.5 focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="Outlet Jakpus #01 (Sudirman)">Outlet Jakpus #01 (Sudirman)</option>
+                  <option value="Outlet Jakbar #02 (Central Park)">Outlet Jakbar #02 (Central Park)</option>
+                  <option value="Outlet Surabaya #03 (Tunjungan)">Outlet Surabaya #03 (Tunjungan)</option>
+                  <option value="Gudang Utama Jakpus">Gudang Utama Jakpus</option>
+                </select>
+              </div>
             </div>
             {cart.length > 0 && (
               <button onClick={() => setCart([])} className="text-[11px] text-rose-400 hover:text-rose-300 font-semibold flex items-center gap-1">
