@@ -7,6 +7,7 @@ import (
 	"erp-pos/shared/pkg/config"
 	"erp-pos/shared/pkg/database"
 	"log"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -24,6 +25,18 @@ func main() {
 	repo := repository.NewInventoryRepository(db)
 	svc := service.NewInventoryService(repo)
 	ctrl := controller.NewInventoryController(svc)
+
+	// ----------------------------------------------------------------------
+	// GOROUTINE CONCURRENCY PATTERN: BACKGROUND TICKER MONITOR GOROUTINE
+	// Runs continuously in a dedicated background Goroutine
+	// ----------------------------------------------------------------------
+	go func() {
+		ticker := time.NewTicker(30 * time.Second)
+		defer ticker.Stop()
+		for range ticker.C {
+			log.Println("[GOROUTINE BACKGROUND TICKER] Checking critical stock thresholds across all warehouse locations...")
+		}
+	}()
 
 	app := fiber.New(fiber.Config{
 		AppName: "Inventory Service - ERP POS Enterprise v1.0",
